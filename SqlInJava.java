@@ -67,6 +67,7 @@ public class SqlInJava {
 
     public static Connection con;
     public static Statement statmt;
+    public static ResultSet rs;
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
 
@@ -79,7 +80,11 @@ public class SqlInJava {
         System.out.println("Таблица создана");
         //add_all_types(types);
         //delite_type(1);
-        update_type(4, "Новая порода");
+        //update_type(4, "Новая порода");
+        get_type(4);
+        get_type_where("id < 15");
+        get_type_where("type LIKE '%а'");
+        get_all_types();
         con.close();
     }
 
@@ -125,5 +130,43 @@ public class SqlInJava {
         }
     }
 
+    public static void get_type(int id){
+        String query = "SELECT type FROM types WHERE id = ?";
+        try (PreparedStatement pstmt = con.prepareStatement(query)){
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+            System.out.println("ИТОГИ:");
+            while (rs.next()){
+                System.out.println(rs.getString("type"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void get_type_where(String where){
+        String query = "SELECT type FROM types WHERE " + where + ";";
+        try ( Statement stmt  = con.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+            System.out.println("-------Результат---------");
+            while (rs.next()) {
+                System.out.println(rs.getString("type"));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void get_all_types(){
+        String query = "SELECT type FROM types";
+        try (Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery(query)){
+            System.out.println("------Все результаты------");
+            while(rs.next()){
+                System.out.println(rs.getString("type"));
+            }
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
 }
 
