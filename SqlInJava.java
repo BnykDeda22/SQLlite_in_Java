@@ -77,6 +77,12 @@ public class SqlInJava {
         statmt = con.createStatement();
         statmt.execute("CREATE TABLE IF NOT EXISTS types(id INTEGER PRIMARY KEY AUTOINCREMENT," +
                                                             "type VARCHAR(100));");
+        statmt.execute("CREATE TABLE IF NOT EXISTS cats(id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                                                            "name VARCHAR(20) NOT NULL, " +
+                                                            "type_id INTEGER, " +
+                                                            "age INTEGER, " +
+                                                            "weight DOUBLE, " +
+                                                            "FOREIGN KEY (type_id) REFERENCES types(id));");
         System.out.println("Таблица создана");
         //add_all_types(types);
         //delite_type(1);
