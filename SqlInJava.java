@@ -77,7 +77,9 @@ public class SqlInJava {
         statmt.execute("CREATE TABLE IF NOT EXISTS types(id INTEGER PRIMARY KEY AUTOINCREMENT," +
                                                             "type VARCHAR(100));");
         System.out.println("Таблица создана");
-        add_all_types(types);
+        //add_all_types(types);
+        //delite_type(1);
+        update_type(4, "Новая порода");
         con.close();
     }
 
@@ -98,4 +100,30 @@ public class SqlInJava {
             System.out.println(e.getMessage());
         }
     }
+
+    public static void delite_type(int id){
+        String query = "DELETE FROM types WHERE id= ? ;";
+        try (PreparedStatement pstmt = con.prepareStatement(query)){
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+            System.out.println("Запись удалена");
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+    public static void update_type(int id, String new_type)     {
+        String query = "UPDATE types " +
+                            "SET type = ? " +
+                          "WHERE id = ?;";
+        try (PreparedStatement pstmt = con.prepareStatement(query)){
+            pstmt.setString(1, new_type);
+            pstmt.setInt(2, id);
+            pstmt.executeUpdate();
+            System.out.println("Запись обновлена");
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
 }
+
