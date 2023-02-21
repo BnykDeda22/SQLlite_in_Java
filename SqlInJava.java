@@ -1,4 +1,3 @@
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
@@ -8,7 +7,7 @@ import java.util.Scanner;
 class SqlInJava {
     public static Connection con;
     public static Statement statmt;
-    public static ResultSet rs;
+
 
     public static void connect(){
         try {
@@ -198,6 +197,49 @@ class SqlInJava {
         }
     }
 
+    public static String get_cat(int id){
+        String query = "SELECT * FROM cats where id = " + id +";";
+        String  str = "";
+        try (ResultSet rs = statmt.executeQuery(query)) {
+            str = rs.getInt(1) + " " +
+                  rs.getString(2) + " " +
+                  rs.getInt(4) + " " +
+                  rs.getDouble(5);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return str.length() != 0 ? str : "Кота с такими id нет";
+    }
+
+    public static ArrayList<String> get_cat_where(String where){
+        ArrayList<String> select = new ArrayList<String>();
+        String query = "SELECT id, name FROM cats WHERE " + where + ";";
+        try ( Statement stmt  = con.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+            while (rs.next()) {
+                select.add(rs.getInt(1) + " " + rs.getString(2));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return select;
+    }
+
+    public static void get_all_cats(){
+        String query = "SELECT  cats.id, name, type, age, weight\n" +
+                        "FROM  cats JOIN types t on cats.type_id = t.id;";
+        try (ResultSet rs = statmt.executeQuery(query)){
+            while (rs.next()){
+                System.out.println(rs.getInt(1) + " " +
+                        rs.getString(2) + " " +
+                        rs.getString(3) + " " +
+                        rs.getInt(4) + " " +
+                        rs.getDouble(5));
+            }
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
     public static void main(String[] args) throws SQLException{
         /*ArrayList<String> list = new ArrayList<String>();
         try (FileReader fr = new FileReader("data.txt")){
@@ -220,9 +262,12 @@ class SqlInJava {
         //insert_cat("Борис", "Дворовой обыкновенный", 2, 13.0);
         //insert_cat("Журавлик", "Полосатый хрен", 6, 8.3);
         //add_more_cats(4987);
-        delete_cat(4);
-        delete_cat("name LIKE 'Б%'");
-        update_cat("name = 'Бобер'", "age=5");
+        //delete_cat(4);
+        //delete_cat("name LIKE 'Б%'");
+        //update_cat("name = 'Бобер'", "age=5");
+        System.out.println(get_cat(3));
+        System.out.println(get_cat_where("weight > 5 AND weight < 6").toString());
+        get_all_cats();
     }
 
 }
