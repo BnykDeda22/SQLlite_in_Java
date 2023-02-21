@@ -166,6 +166,38 @@ class SqlInJava {
         }
     }
 
+    public static void delete_cat(int id){
+        String query = "DELETE FROM cats WHERE id= ? ;";
+        try (PreparedStatement pstmt = con.prepareStatement(query)){
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+            System.out.println("Запись удалена");
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void delete_cat(String where){
+        String query = "DELETE FROM cats WHERE " + where + ";";
+        try {
+            statmt.executeUpdate(query);
+            System.out.println("Запись(-и) удалена(-ы)");
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public static void update_cat(String set, String where){
+        String query = "UPDATE cats " +
+                        "SET " + set + " " +
+                        "WHERE " + where + ";";
+        try {
+            statmt.executeUpdate(query);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     public static void main(String[] args) throws SQLException{
         /*ArrayList<String> list = new ArrayList<String>();
         try (FileReader fr = new FileReader("data.txt")){
@@ -187,7 +219,10 @@ class SqlInJava {
         //insert_cat("Барсик", "Египетская мау", 3, 7.5);
         //insert_cat("Борис", "Дворовой обыкновенный", 2, 13.0);
         //insert_cat("Журавлик", "Полосатый хрен", 6, 8.3);
-        add_more_cats(5);
+        //add_more_cats(4987);
+        delete_cat(4);
+        delete_cat("name LIKE 'Б%'");
+        update_cat("name = 'Бобер'", "age=5");
     }
 
 }
