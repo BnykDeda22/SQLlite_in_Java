@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
@@ -145,6 +146,26 @@ class SqlInJava {
         }
     }
 
+    public static void add_more_cats(int n){
+        ArrayList<String> names = new ArrayList<String>();
+        try (FileReader fr = new FileReader("names.txt")){
+            Scanner sc = new Scanner(fr);
+            while (sc.hasNextLine()){
+                names.add(sc.nextLine());
+            }
+        } catch (IOException fnfe){
+            System.out.println(fnfe.getMessage());
+        }
+        for (int i=0; i<n; i++){
+            String name = names.get((int) (Math.random()*names.size()));
+            String type = get_type_where("id > 0").get((int) (Math.random()*get_type_where("id > 0").size()));
+            int age = (int) (Math.random()* 13);
+            String str = String.format("%.2f", ((Math.random() * ((8 - 3) + 1)) + 3));
+            double weight = Double.parseDouble(str.replace(',', '.'));
+            insert_cat(name, type, age, weight);
+        }
+    }
+
     public static void main(String[] args) throws SQLException{
         /*ArrayList<String> list = new ArrayList<String>();
         try (FileReader fr = new FileReader("data.txt")){
@@ -162,10 +183,11 @@ class SqlInJava {
         //update_type(1, "Новый тип");
         //System.out.println(get_type(2));
         //System.out.println(get_type_where("type LIKE '%а%'").toString());
-        create_table_cats();
-        insert_cat("Барсик", "Египетская мау", 3, 7.5);
-        insert_cat("Борис", "Дворовой обыкновенный", 2, 13.0);
-        insert_cat("Журавлик", "Полосатый хрен", 6, 8.3);
+        //create_table_cats();
+        //insert_cat("Барсик", "Египетская мау", 3, 7.5);
+        //insert_cat("Борис", "Дворовой обыкновенный", 2, 13.0);
+        //insert_cat("Журавлик", "Полосатый хрен", 6, 8.3);
+        add_more_cats(5);
     }
 
 }
